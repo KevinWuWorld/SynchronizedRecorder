@@ -36,7 +36,9 @@ Here'a full list of all dependencies necessary for this node:
     
   - roscore
 
-  - dvrk control console turned on. Start this using the following command:
+  - dvrk control console turned on.
+    First, navigate to this folder: username@lcsr-dvrk-xx: ~/catkin_ws/src/dvrk/dvrk_config_jhu/jhu-daVinci
+    Start this using the following command:
     ```
     rosrun dvrk_robot dvrk_console_json -j console-PSM1.json -p 0.001
     ```
