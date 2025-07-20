@@ -27,6 +27,7 @@ void printUsage() {
               << "-a PSM1 [-a PSM2] [-a ECM] -x <js|cp> -t <time_tolerance_seconds>" << std::endl;
 }
 
+
 std::string g_camera_topic_base = "test";   // default camera topic base; still user must specify the topic in the argument
 bool        g_use_left_image    = true;     // using left camera?
 bool        g_use_right_image   = true;     // using right camera?
@@ -771,7 +772,7 @@ void writerThread() {
 
 
 
-        // Convert from BGR -> RGB as requested
+        // convert from BGR -> RGB as requested
         cv::Mat left_rgb, right_rgb;
 
         bool ok_left  = true;
@@ -796,7 +797,7 @@ void writerThread() {
 
 
 
-        // --- Write PSM1 kinematics ---
+        // write PSM1 kinematics 
         if (g_record_psm1) {
             std::string kin_path_psm1 = final_folder + "/kinematics_PSM1.json";
             Json::Value root;
@@ -882,7 +883,7 @@ void writerThread() {
         }
 
         
-        // --- Write PSM2 kinematics ---
+        // write PSM2 kinematics
         if (g_record_psm2) {
             std::string kin_path_psm2 = final_folder + "/kinematics_PSM2.json";
             Json::Value root;
@@ -1111,7 +1112,7 @@ void countFoldersPerSecond() {
         }
     }
 
-    // Print output freq
+    // print output freq
     for (const auto &[sec, count] : folder_count) {
         std::cout << "At " << sec << "second: " << count << " Hz" << std::endl;
     }
@@ -1129,16 +1130,18 @@ void reformatDataStorage() {
     int index = 0;
     for (const auto &entry : std::filesystem::directory_iterator("recorded_data")) {
         if (entry.is_directory()) {
+            
             std::string img_left_src   = entry.path().string() + "/image_left.png";
             std::string img_right_src  = entry.path().string() + "/image_right.png";
             std::string kin_src_psm1   = entry.path().string() + "/kinematics_PSM1.json";
             std::string kin_src_psm2   = entry.path().string() + "/kinematics_PSM2.json";
             std::string kin_src_ecm    = entry.path().string() + "/kinematics_ECM.json";
-            std::string time_syn_src   = entry.path().string(); // the entire folder as context
+            std::string time_syn_src   = entry.path().string(); 
+            
 
             std::string img_left_dst   = base_folder + "/image/" + std::to_string(index) + "_left.png";
             std::string img_right_dst  = base_folder + "/image/" + std::to_string(index) + "_right.png";
-            // Now name the kinematics files "index_PSM1.json" and "index_PSM2.json" and "index_ECM.json"
+            // now we're naming the kinematics files "index_PSM1.json" and "index_PSM2.json" and "index_ECM.json"
             std::string kin_dst_psm1   = base_folder + "/kinematic/" + std::to_string(index) + "_PSM1.json";
             std::string kin_dst_psm2   = base_folder + "/kinematic/" + std::to_string(index) + "_PSM2.json";
             std::string kin_dst_ecm    = base_folder + "/kinematic/" + std::to_string(index) + "_ECM.json";
@@ -1313,7 +1316,7 @@ int main(int argc, char** argv) {
 
     std::thread sync_t(syncThread);
 
-    // --- launch a pool of writer threads for higher throughput ---
+    // launch a pool of writer threads for higher throughput 
     std::vector<std::thread> writer_threads;
     for (int i = 0; i < NUM_WRITER_THREADS; ++i) {
         writer_threads.emplace_back(writerThread);
